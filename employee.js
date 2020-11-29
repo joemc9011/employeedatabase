@@ -1,16 +1,16 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
-const connection = mysql.createConnection({
-    host: "Employee",
-    port: 8000,
-    user: "employer",
+
+var connection = mysql.createConnection({
+    host: "localhost",
+    port: 3306,
+    user: "root",
     password: "McAndrew90)",
-    database: ""
+    database: "./employee.sql"
 });
 
 connection.connect(function (err) {
     if (err) throw err;
-    console.log("youre connected" + connection.threadId);
     afterConnection();
 });
 // starting point to determine what area we're working in
@@ -21,19 +21,18 @@ function afterConnection() {
         message: "Hello. Please select one area:",
         choices: ["Departments", "Employees", "Roles"]
     })
-        .then(function (answers) {
-            if (answer.edits === "Departments") {
+        .then(function (response) {
+            if (response.edits === "Departments") {
                 departmentChoice();
             }
-            if (answer.edits === "Employees") {
+            if (response.edits === "Employees") {
                 employeeChoice();
             }
-            if (answer.edits === "Roles") {
+            if (response.edits === "Roles") {
                 roleChoice();
             }
-            else {
-                connection.end();
-            }
+    
+        
         });
 }
 
@@ -42,20 +41,17 @@ function afterConnection() {
 // within the first function, but I know 100% (with a grain of salt) I can understand it if i do, what im estimating to be, 9 functions lol 
 function departmentChoice() {
     inquirer.prompt({
-        name: "edits",
+        name: "addview",
         type: "list",
         message: "What would you like to do within this area?",
         choices: ["Add", "View"]
     })
-        .then(function (answer) {
-            if (answer.edits === "Add") {
+        .then(function (response) {
+            if (response.addview === "Add") {
                 dAdd();
             }
-            if (answer.edits === "View") {
+            if (response.addview === "View") {
                 dView();
-            }
-            else {
-                connection.end();
             }
         });
 
@@ -63,43 +59,37 @@ function departmentChoice() {
 
 function employeeChoice() {
     inquirer.prompt({
-        name: "edits",
+        name: "empaddview",
         type: "list",
         message: "What would you like to do within this area?",
         choices: ["Add", "View", "Update"]
     })
-        .then(function (answer) {
-            if (answer.edits === "Add") {
+        .then(function (response) {
+            if (response.empaddview === "Add") {
                 eAdd();
             }
-            if (answer.edits === "View") {
+            if (response.empaddview === "View") {
                 eView();
-            }
-            else {
-                connection.end();
             }
         });
 }
 
 function roleChoice() {
     inquirer.prompt({
-        name: "edits",
+        name: "roleaddviewup",
         type: "list",
         message: "What would you like to do within this area?",
         choices: ["Add", "View", "Update"]
     })
-        .then(function (answer) {
-            if (answer.edits === "Add") {
+        .then(function (response) {
+            if (response.roleaddviewup === "Add") {
                 rAdd();
             }
-            if (answer.edits === "View") {
+            if (response.roleaddviewup === "View") {
                 rView();
             }
-            if (answer.edits === "Update") {
+            if (response.roleaddviewup === "Update") {
                 rUpload();
-            }
-            else {
-                connection.end();
             }
         });
 }
@@ -112,7 +102,7 @@ function dAdd() {
             type: "input",
             message: "What would you like to name this new department?"
         })
-        .then(function (answer) {
+        .then(function(answer) {
             connection.query(
                 "INSERT INTO dept SET ?",
                 {
@@ -128,7 +118,13 @@ function dAdd() {
 }
 
 // department view
-
+function dView (){
+    console.log("Departments: ");
+    connection.query("SELECT * FROM dept", function(err, res){
+        if (err) throw err;
+        console.log(res);
+    });
+}
 
 
 // employee add
@@ -147,12 +143,12 @@ function eAdd() {
                 message: "What is your new employee's last name?"
             }
         ])
-        .then(function (answer) {
+        .then(function (response) {
             connection.query(
                 "INSERT INTO staff SET ?",
                 {
-                    first_name: answer.addEmpFirst,
-                    last_name: answer.addEmpLast
+                    first_name: response.addEmpFirst,
+                    last_name: response.addEmpLast
                 },
                 function (err) {
                     if (err) throw err;
@@ -164,7 +160,13 @@ function eAdd() {
 }
 
 // employee view
-
+function eView (){
+    console.log("Employees: ");
+    connection.query("SELECT * FROM staff", function(err, res){
+        if (err) throw err;
+        console.log(res);
+    });
+}
 
 // role add
 function rAdd() {
@@ -182,21 +184,29 @@ function rAdd() {
                 message: "What is this role's salary?"
             }
         ])
-        .then(function (answer) {
+        .then(function (response) {
             connection.query(
                 "INSERT INTO role SET ?",
                 {
-                    title: answer.titleName,
-                    salary: answer.salary
+                    title: response.titleName,
+                    salary: response.salary
                 },
-                function (err) {
-                    if (err) throw err;
-                    console.log("Your employee has been added");
-                    // return to a function??
-                }
+                // function (err) {
+                //     if (err) throw err;
+                //     console.log("Your employee has been added");
+                //     // return to a function??
+                // }
             );
         });
 }
 
-
+// role view
+function rView (){
+    console.log("Roles: ");
+    connection.query("SELECT * FROM role", function(err, res){
+        if (err) throw err;
+        console.log(res);
+    });
+}
+// role update
 
