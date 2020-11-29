@@ -1,16 +1,12 @@
-create database departmentsdb;
+create database trackerdb;
 
-use departmentsdb;
+use trackerdb;
 
 create table dept (
 id integer not null auto_increment,
 dept_name varchar (30) not null,
 primary key (id)
 );
-
-create database rolesdb;
-
-use rolesdb;
 
 create table role(
 id integer not null auto_increment,
@@ -20,9 +16,6 @@ department_id integer not null,
 primary key (id)
 );
 
-create database employeedb;
-
-use employeedb;
 
 create table staff (
 id integer not null auto_increment,

@@ -6,7 +6,7 @@ var connection = mysql.createConnection({
     port: 3306,
     user: "root",
     password: "McAndrew90)",
-    database: "./employee.sql"
+    database: "trackerdb"
 });
 
 connection.connect(function (err) {
@@ -53,6 +53,7 @@ function departmentChoice() {
             if (response.addview === "View") {
                 dView();
             }
+
         });
 
 }
@@ -91,6 +92,7 @@ function roleChoice() {
             if (response.roleaddviewup === "Update") {
                 rUpload();
             }
+
         });
 }
 // department add
@@ -102,11 +104,11 @@ function dAdd() {
             type: "input",
             message: "What would you like to name this new department?"
         })
-        .then(function(answer) {
+        .then(function (response) {
             connection.query(
                 "INSERT INTO dept SET ?",
                 {
-                    dept_name: answer.addDept
+                    dept_name: response.addDept
                 },
                 function (err) {
                     if (err) throw err;
