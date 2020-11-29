@@ -45,7 +45,7 @@ function departmentChoice() {
         name: "edits",
         type: "list",
         message: "What would you like to do within this area?",
-        choices: ["Add", "View", "Update"]
+        choices: ["Add", "View"]
     })
         .then(function (answer) {
             if (answer.edits === "Add") {
@@ -53,9 +53,6 @@ function departmentChoice() {
             }
             if (answer.edits === "View") {
                 dView();
-            }
-            if (answer.edits === "Update") {
-                dUpdate();
             }
             else {
                 connection.end();
@@ -77,9 +74,6 @@ function employeeChoice() {
             }
             if (answer.edits === "View") {
                 eView();
-            }
-            if (answer.edits === "Update") {
-                eUpload();
             }
             else {
                 connection.end();
@@ -109,24 +103,95 @@ function roleChoice() {
             }
         });
 }
-
-function dAdd () {
+// department add
+function dAdd() {
     inquirer
-    .prompt
-    ({
+        .prompt
+        ({
             name: "addDept",
             type: "input",
             message: "What would you like to name this new department?"
         })
-        .then(function(answer){
+        .then(function (answer) {
             connection.query(
                 "INSERT INTO dept SET ?",
                 {
                     dept_name: answer.addDept
                 },
-                function(err){
+                function (err) {
                     if (err) throw err;
                     console.log("Your department has been added");
+                    // return to a function??
+                }
+            );
+        });
+}
+
+// department view
+
+
+
+// employee add
+function eAdd() {
+    inquirer
+        .prompt
+        ([
+            {
+                name: "addEmpFirst",
+                type: "input",
+                message: "What is your new employee's first name?"
+            },
+            {
+                name: "addEmpLast",
+                type: "input",
+                message: "What is your new employee's last name?"
+            }
+        ])
+        .then(function (answer) {
+            connection.query(
+                "INSERT INTO staff SET ?",
+                {
+                    first_name: answer.addEmpFirst,
+                    last_name: answer.addEmpLast
+                },
+                function (err) {
+                    if (err) throw err;
+                    console.log("Your employee has been added");
+                    // return to a function??
+                }
+            );
+        });
+}
+
+// employee view
+
+
+// role add
+function rAdd() {
+    inquirer
+        .prompt
+        ([
+            {
+                name: "titleName",
+                type: "input",
+                message: "What is the name of the new employee role?"
+            },
+            {
+                name: "salary",
+                type: "input",
+                message: "What is this role's salary?"
+            }
+        ])
+        .then(function (answer) {
+            connection.query(
+                "INSERT INTO role SET ?",
+                {
+                    title: answer.titleName,
+                    salary: answer.salary
+                },
+                function (err) {
+                    if (err) throw err;
+                    console.log("Your employee has been added");
                     // return to a function??
                 }
             );
